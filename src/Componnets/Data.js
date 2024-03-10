@@ -50,7 +50,26 @@ const Data = () => {
             console.error('Error:', error);
         }
     };
-    
+
+    const handleDelete = async (id) => {
+        if (window.confirm('Are you sure you want to delete this data?')) {
+            try {
+                const response = await fetch(`https://microex.onrender.com/api/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    toast.success('Data deleted successfully');
+                    fetchData(); // Refresh data after successful delete
+                } else {
+                    toast.error('Failed to delete data:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+    };
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setEditedData({ ...editedData, [name]: value });
@@ -76,7 +95,10 @@ const Data = () => {
                                 {editingId === index ? (
                                     <button className='btn btn-success' onClick={() => handleSave()}>Save</button>
                                 ) : (
-                                    <button className='btn btn-primary' onClick={() => handleEdit(index, output)}>Edit</button>
+                                    <>
+                                        <button className='btn btn-primary' onClick={() => handleEdit(index, output)}>Edit</button>
+                                        <button className='btn btn-danger ms-2' onClick={() => handleDelete(output._id)}>Delete</button>
+                                    </>
                                 )}
                             </td>
                         </tr>
